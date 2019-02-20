@@ -1,0 +1,47 @@
+#Install app
+- name : "Reddit App: Configure app enviroment"
+  hosts: all
+  user: root
+
+  tasks:
+          - name: Install ruby and rubygems and required packages
+            apt: "name={{ item }} state=present"
+            with_items:
+                      - ruby-full
+                      - ruby-dev
+                      - build-essential
+                      - ruby-bundler
+
+          #Install MongoDB
+          - name: MongoDb | Import public key
+            sudo: yes
+            apt_key: >
+                    keyserver=hkp://keyserver.ubuntu.com:80
+                    id=EA312927
+          - name: MongoDB | Add file
+            file:
+                    path=/etc/apt/sources.list.d/mongodb-org-3.2.list
+                    state=touch
+               
+          - name: MongoDB | Add repository
+            sudo: yes
+            lineinfile: >
+                    line="deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse"
+                    dest=/etc/apt/sources.list.d/mongodb-org-3.2.list
+                    state=present
+          
+          - name: MongoDB | Install MongoDB
+            apt: 
+              name: mongodb-org
+              allow_unauthenticated: yes
+              state: present
+              update_cache: yes
+
+          - name: MongoDB | Ensure MongoDB is running
+            service: 
+              name: mongod
+              state: started
+          - name: Clone git repository
+            git:
+                    repo: 'https://github.com/Artemmkin/reddit'
+                    dest: /reddit
