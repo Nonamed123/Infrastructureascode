@@ -1,0 +1,32 @@
+# Deploy APP
+- bundler:
+       state: present
+       chdir: /reddit
+  
+- name : Clone repository | Github service
+  git:
+          repo: 'https://github.com/Nonamed123/ser.git'
+          dest: "{{ temp_folder }}/puma1.service"
+
+- name: State | File
+  stat: path=/tmp/puma1.service/puma1.service
+  register: stat_result
+
+- name: Copy file | repository
+  command:
+          mv /tmp/puma1.service/puma1.service  /lib/systemd/system/puma.service
+  when: stat_result.stat.exists == True
+
+- name: Puma | Remove service file
+  file:
+          path: "{{ temp_folder }}/puma1.service"
+          state: absent 
+
+- name: Puma | State start
+  service:
+          name: puma
+          state: started
+- name: Puma | State enabled
+  service:
+          name: puma
+          enabled: yes

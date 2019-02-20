@@ -1,0 +1,5 @@
+# Clone repository | Gtihub
+- name: Clone repository | Github Reddit
+  git:
+          repo: 'https://github.com/Nonamed123/reddit'
+          dest: /reddit

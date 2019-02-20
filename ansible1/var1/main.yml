@@ -1,0 +1,16 @@
+---
+- hosts: nodes
+  remote_user: root
+  become: yes
+  become_method: sudo
+  vars:
+          temp_folder: /tmp
+  tasks: 
+    # istall ruby
+    - include : tasks/ruby.yml
+    # Instll MongoDB
+    - include: tasks/mongo.yml
+    # Clone repository
+    - include: tasks/clone.yml  
+    # Deloy app
+    - include: tasks/deploy.yml 
