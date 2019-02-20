@@ -1,0 +1,63 @@
+#Install app
+- name : "Inatall app : for packer"
+  hosts: all
+  become: yes
+  become_method: sudo
+  remote_user: root
+  vars:
+       temp_folder: /tmp
+  tasks:
+
+    - name: Install | ruby full
+      apt: "name={{ item }} state=present"
+      with_items:
+              - ruby-full
+              - ruby-dev
+              - build-essential
+              - ruby-bundler
+    - name: Clone repository | Github Reddit
+      git:
+          repo: 'https://github.com/Nonamed123/reddit'
+          dest: /reddit
+          
+    - bundler:
+        state: present
+        chdir: /reddit
+
+    - name: Cheking status | check status service
+      stat: path="{{ temp_folder }}/puma1.service"
+      register: stat_result
+    - name : Clone repository | Github service
+      git:
+              repo: 'https://github.com/Nonamed123/ser.git'
+              dest: "{{ temp_folder }}/puma1.service"
+      when: stat_result.stat.exists == False
+
+    - name: State | File
+      stat: path=/tmp/puma1.service/puma1.service
+      register: stat_result
+
+    - name: Copy file | repository
+      command:
+              mv /tmp/puma1.service/puma1.service  /lib/systemd/system/puma.service
+      when: stat_result.stat.exists == True
+
+    - name: Puma | Remove service file
+      file:
+              path: "{{ temp_folder }}/puma1.service"
+              state: absent 
+
+    - name: Puma | State start
+      service:
+              name: puma
+              state: started
+             
+    - name: Puma | State enabled
+      service:
+              name: puma
+              enabled: yes
+             
+    - name: Reload Puma
+      systemd:
+              name: puma
+              daemon_reload: yes

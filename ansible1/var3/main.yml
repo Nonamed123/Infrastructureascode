@@ -1,0 +1,38 @@
+---
+- name : "Main module start"
+  hosts: app
+  remote_user: root
+  become: yes
+  become_method: sudo
+  vars:
+          temp_folder: /tmp
+  tasks: 
+    # istall ruby
+    - include : tasks/ruby.yml
+    # Clone repository
+    - include: tasks/clone.yml  
+    # Deloy app
+    - include: tasks/deploy.yml
+
+# MongoDB tasks      
+- name: Task for MongoDB
+  hosts: db
+  remote_user: root
+  become: yes
+  become_method: sudo
+  vars:
+          temp_folder: /tmp
+  tasks:
+    # Install MongoDB
+    - include : tasks/mongo.yml   
+    # Firewall rule
+    #- include: tasks/mongof.yml
+#reload service
+- name: Reload puma
+  hosts: app
+  remote_user: root
+  become: yes
+  become_method: sudo
+  tasks:
+    #Reload puma
+    - include : tasks/resp.yml 

@@ -1,0 +1,17 @@
+# mongoDB firewall rule
+- name: MongDB | Create firewall rule
+  tasks:
+  gcp_compute_firewall:
+          name: "allow-mongo-default"
+          allowed:
+          - ip_protocol: tcp
+          ports:
+          - '27017'
+          target_tags: 
+          - reddi-db
+          source_tags:
+          - reddit-app
+          project: "infra-230211"
+          auth_ind: "service_account"
+          service_account_file: "/rott/key/key/infra-d736f12f06af.json"
+          state: present
