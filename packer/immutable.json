@@ -1,0 +1,35 @@
+{
+"variables": {
+"proj_id": "testdevops",
+"machi_type": "g1-small",
+"sour_image":"ubuntu-1604-xenial-v20190112"
+},
+"builders": [
+{
+"type": "googlecompute",
+"project_id": "{{user `proj_id`}}",
+"image_name": "reddit-base-{{timestamp}}",
+"source_image": "{{user `sour_image`}}",
+"zone": "europe-west1-b",
+"ssh_username": "root",
+"machine_type": "{{user `machi_type`}}",
+"tags":"puma-server",
+"instance_name":"reddit-app"
+}
+],
+"provisioners": [
+{
+"type": "shell",
+"script": "scripts/install_ruby.sh"
+},
+{
+"type": "shell",
+"script": "scripts/install_mongodb.sh",
+"execute_command": "sudo {{.Path}}"
+},
+{
+"type": "shell",
+"script": "scripts/deploy.sh"
+}
+]
+}

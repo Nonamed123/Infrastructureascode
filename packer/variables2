@@ -1,0 +1,5 @@
+{
+   "project_id":"infra-230211",
+   "source_image_family":"ubuntu-1604-lts",
+   "machine_type":"g1-small"
+}
