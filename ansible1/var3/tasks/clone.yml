@@ -1,5 +1,10 @@
 # Clone repository | Gtihub
+- name: Reddit | Check status
+  stat: path=/reddit
+  register: stat_result
+
 - name: Clone repository | Github Reddit
   git:
           repo: 'https://github.com/Nonamed123/reddit'
           dest: /reddit
+  when: stat_result.stat.exists == False
