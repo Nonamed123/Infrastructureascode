@@ -6,3 +6,4 @@
           - ruby-dev
           - build-essential
           - ruby-bundler
+          - mc

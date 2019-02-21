@@ -27,6 +27,12 @@
           allow_unauthenticated: yes
           state: present
           update_cache: yes
+
+- name: MongoDB | Install mc
+  apt:
+          name: mc
+          state: present
+
 - name: MongoDB | Ensure MongoDB is running
   service:
           name: mongod
