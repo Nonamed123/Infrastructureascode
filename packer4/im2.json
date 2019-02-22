@@ -1,0 +1,42 @@
+{
+  "variables": {
+          "project_id": null,
+          "source_image_family": null,
+          "machine_type": null
+              },
+  "builders": [
+    {
+    "type": "googlecompute",
+    "project_id": "{{user `project_id`}}",
+    "image_name": "reddit-test-{{timestamp}}",
+    "image_family": "reddit-test",
+    "source_image": "ubuntu-1604-xenial-v20170815a",
+    "source_image_family": "{{user `source_image_family`}}",
+    "zone": "europe-west1-b",
+    "ssh_username": "Buldozer",
+        "instance_name":"reddit-app",
+    "machine_type": "{{user `machine_type`}}",
+    "disk_size": "10",
+	  "disk_type": "pd-standard",
+	  "network": "default",
+	  "tags": "puma-server",
+    "image_description": "OS with MongoDB, Ruby."
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "scripts/install_ruby.sh"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/install_mongodb.sh",
+      "execute_command": "sudo {{.Path}}"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/deploy4.sh",
+      "execute_command": "sudo {{.Path}}"
+    }
+  ]
+}
