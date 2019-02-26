@@ -1,0 +1,6 @@
+# Restart puma for work deploy
+---
+- name: Reload Puma
+  systemd:
+          name: puma
+          daemon_reload: yes
