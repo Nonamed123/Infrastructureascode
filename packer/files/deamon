@@ -1,0 +1,83 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          scriptname
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+
+#PROGRAM_HOME домашняя директория программы (для запуска\остановки)
+export PROGRAM_HOME=/home/Buldozer/reddit
+
+#PROGRAM_USAGE сообщение-подсказка при обращении к программе
+PROGRAM_USAGE="Usage: $0 {\e[00;32mstart\e[00m|\e[00;31mstop\e[00m|\e[00;31mkill\e[00m|\e[00;32mstatus\e[00m|\e[00;31mrestart\e[00m}"
+
+program_pid() {
+    echo $(ps aux | grep puma | grep -v grep | tr -s " "|cut -d" " -f2)
+}
+
+start() {
+    pid=$(program_pid)
+    if [ -n "$pid" ]
+        then
+        echo -e "\e[00;31mProgram is already running (pid: $pid)\e[00m"
+    else
+        echo -e "\e[00;32mStarting Program\e[00m"
+        cd ${PROGRAM_HOME}
+        puma -d
+        status
+  fi
+  return 0
+}
+
+status(){
+          pid=$(program_pid)
+          if [ -n "${pid}" ]
+            then echo -e "\e[00;32mProgram is running with pid: ${pid}\e[00m"
+          else
+            echo -e "\e[00;31mProgram is not running\e[00m"
+            return 3
+          fi
+}
+
+terminate() {
+    echo -e "\e[00;31mTerminating Program\e[00m"
+    kill -9 $(program_pid)
+}
+
+stop() {
+  pid=$(program_pid)
+  if [ -n "$pid" ]; then
+    echo -e "\e[00;31mStoping Program\e[00m"
+    terminate
+  else
+    echo -e "\e[00;31mProgram is not running\e[00m"
+  fi
+
+  return 0
+}
+
+case $1 in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        stop
+        start
+    ;;
+    status)
+        status
+        exit $?
+    ;;
+    *)
+        echo -e ${PROGRAM_USAGE}
+    ;;
+esac
+exit 0

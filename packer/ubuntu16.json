@@ -1,0 +1,40 @@
+{
+"variables": {
+"proj_id": "testdevops",
+"machi_type": "g1-small",
+"sour_image":"ubuntu-1604-xenial-v20190112",
+"d_size": "10",
+"im_fam":"Ubuntu 16.04",
+"d_type":"pd-standard"
+},
+"builders": [
+{
+"type": "googlecompute",
+"project_id": "{{user `proj_id`}}",
+"image_name": "reddit-base-{{timestamp}}",
+"source_image": "{{user `sour_image`}}",
+"zone": "europe-west1-b",
+"ssh_username": "Buldozer",
+"disk_size": "{{user `d_size`}}",
+"source_image_family": "{{user `im_fam`}}",
+"disk_type":"{{user `d_type`}}",
+"machine_type": "{{user `machi_type`}}",
+"tags":"puma-server"
+}
+],
+"provisioners": [
+{
+"type": "shell",
+"script": "scripts/install_ruby.sh"
+},
+{
+"type": "shell",
+"script": "scripts/install_mongodb.sh",
+"execute_command": "sudo {{.Path}}"
+},
+{
+    "type": "shell",
+"script": "scripts/deploy.sh"
+}
+]
+}

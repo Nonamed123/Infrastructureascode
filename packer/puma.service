@@ -1,0 +1,14 @@
+[Unit]
+Description=Puma HTTP Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/reddit
+ExecStart=/root/reddit/sp.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

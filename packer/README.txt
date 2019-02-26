@@ -1,0 +1,2 @@
+gcloud compute instances create reddit-app --image-family reddit-full --zone=europe-west1-b --tags puma-server --machine-type=g1-small --restart-on-failure - for first varian
+gcloud compute instances create reddit-app --image-family reddit-apper --zone=europe-west1-b --tags puma-server --machine-type=g1-small --restart-on-failure - for second variant
