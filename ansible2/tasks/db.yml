@@ -5,6 +5,11 @@
   vars:
           mongo_bind_ip: 0.0.0.0
   tasks:
+          - name: MongoDB | Checking status file
+            stat:
+                    path: /etc/mongod.conf
+            register: stat_result
+
           - name: Configure hosts | Change mongo config file
             become: true
             template:
@@ -12,7 +17,9 @@
                     dest: /etc/mongod.conf
                     mode: 0644
             tags: db-tag
+            when: stat_result.stat.exists == True
             notify: restart mongod
+
   handlers:
           - name: restart mongod
             become: true
