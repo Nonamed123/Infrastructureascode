@@ -2,6 +2,7 @@
 - name: MongoDb | Configure host
   hosts: db
   become: true
+  tags: db-tag
   vars:
           mongo_bind_ip: 0.0.0.0
   tasks:
@@ -16,7 +17,6 @@
                     src: /root/templates/mongod.conf.j2
                     dest: /etc/mongod.conf
                     mode: 0644
-            tags: db-tag
             when: stat_result.stat.exists == True
             notify: restart mongod
 
