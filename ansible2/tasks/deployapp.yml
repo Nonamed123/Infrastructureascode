@@ -2,6 +2,7 @@
 - name: Deloy app
   hosts: app
   become: true
+  tags: deploy-tag
   tasks:
           - name: Puma | Checkinng file
             stat:
@@ -12,8 +13,7 @@
             git:
                     repo: 'https://github.com/Artemmkin/reddit.git'
                     dest: /root/reddit
-                    version: monolith
-            tags: deploy-tag
+                    version: monolith            
             when: stat_result.stat.exists == True
             notify: restart puma
 
@@ -21,7 +21,6 @@
             bundler:
                     state: present
                     chdir: /root/reddit
-            tags: deploy-tag
 
   handlers:
          - name: restart puma
