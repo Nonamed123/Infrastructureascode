@@ -1,0 +1,93 @@
+---
+- name: MongoDb | Configure host
+  hosts: db
+  become: true
+  tags: db-tag
+  vars:
+          mongo_bind_ip: 0.0.0.0
+  tasks:
+          - name: MongoDB | Checking status file
+            stat:
+                    path: /etc/mongod.conf
+            register: stat_result
+
+          - name: Configure hosts | Change mongo config file
+            become: true
+            template:
+                    src: /root/templates/mongod.conf.j2
+                    dest: /etc/mongod.conf
+                    mode: 0644
+            when: stat_result.stat.exists == True
+            notify: restart mongod
+
+  handlers:
+          - name: restart mongod
+            become: true
+            service: name=mongod state=restarted
+
+- name: Start App
+  hosts: app
+  become: true
+  tags: app-tag
+  vars:
+          mongo_bind_ip: 0.0.0.0
+          db_host: 10.132.15.222
+  tasks:
+          - name: Puma | Checking status file
+            stat:
+                    path: /etc/systemd/system/puma.service
+            register: stat_result
+
+          - name: Add unit file for puma
+            template:
+                    src: /root/files/puma.service
+                    dest: /etc/systemd/system/puma.service
+            when: stat_result.stat.exists == False
+            notify: reload puma
+
+          - name: Puma and DB | Cheking status file
+            stat:
+                    path: /root/db_config
+            register: stat_result
+
+          - name: Add config for DB connection
+            template:
+                    src: /root/templates/db_config.j2
+                    dest: /root/db_config
+            when: stat_result.stat.exists == False
+
+          - name: enable puma
+            systemd: name=puma enabled=yes
+  
+  handlers:
+         - name: reload puma
+           become: true
+           systemd: name=puma state=reloaded
+           
+- name: Deloy app
+  hosts: app
+  become: true
+  tags: deploy-tag
+  tasks:
+          - name: Puma | Checkinng file
+            stat:
+                    path: /root/reddit
+            register: stat_result
+
+          - name: Fetch the latest version of application code
+            git:
+                    repo: 'https://github.com/Artemmkin/reddit.git'
+                    dest: /root/reddit
+                    version: monolith            
+            when: stat_result.stat.exists == True
+            notify: restart puma
+
+          - name: Bundle install
+            bundler:
+                    state: present
+                    chdir: /root/reddit
+
+  handlers:
+         - name: restart puma
+           become: true
+           systemd: name=puma state=restarted

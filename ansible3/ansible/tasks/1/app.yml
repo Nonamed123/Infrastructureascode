@@ -1,0 +1,9 @@
+---
+- name: Start App
+  hosts: app
+  become: true
+  tags: app-tag
+  roles:
+          - app
+          - jdauphant.nginx
+
