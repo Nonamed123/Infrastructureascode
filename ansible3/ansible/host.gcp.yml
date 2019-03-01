@@ -1,0 +1,6 @@
+plugin: gcp_compute
+projects:
+        - google.com: infra-230211
+filters:
+        auth_kind: serviceaccount
+        service_account_file: /root/key/key/infra_d736f12f06af.json

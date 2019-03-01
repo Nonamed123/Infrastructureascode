@@ -1,0 +1,7 @@
+---
+# Setting DB  server
+- include : /root/tasks/db.yml
+# Setting App server
+- include: /root/tasks/app.yml 
+# Deploy app
+- include : /root/tasks/deployapp.yml 
