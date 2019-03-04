@@ -5,7 +5,7 @@ Add playbook for configure app-server and db-server in one host
 Add playbook for configure app-serve and db-server for other hosts
 Add file gce.py for chech ip, this dynamic uinventory
 
-#Homework 12 Ansible работа с ролями.#
+# Homework 12 Ansible работа с ролями. #
 
 Создали две роли - roles/db и roles/app, для конфигурирования бд и приложения.
 
@@ -50,7 +50,7 @@ environments
     └── inventory
 Где мы указываем хосты и переменные.
 
-Запускаются плейбуки командами:
+## Запускаются плейбуки командами:
 
 Для prod
 
@@ -64,14 +64,13 @@ ansible-playbook playbooks/site.yml
 Организация рабочего каталога ansible.
 Все плейбуки перенесены в новый каталог playbooks. Все ненужные файлы и каталоги преренесены в новый каталог old. В конфиге ansible.conf добавлено несколько директив: для явного задания каталога с ролями, для отключения формирования файлов *.retry и для вывода информации об изменениях в модифицируемых файлах (раздел [diff]). Поочередно проверены конфигурирование stage и prod окружений с помощью ansible. Доступ к приложению в обоих случаях получен.
 
-Роли сообщества.
+## Роли сообщества.
 В оба окружения добавлен файл зависимостей requiremenst.yml c ролью из ansible galaxy "jdauphant.nginx". Данная роль проинсталирована и добавлена в файл .gitignore репозитория, чтобы не комитить её.
 
 Самостоятельное задание.
 Для самостоятельного задания в конфиг terraform было добавлено открытие порта 80 на сервер приложения при помощи ресурса управления правилами фаервола. Для этого в модуль конфигурации приложения добавлен ресурс "google_compute_firewall firewall_nginx" и соответствующие переменные используемые в нем. Далее инфраструктура была развернута с использованием данной конфигурации. В плейбук app.yml добавлен вызов комьюнити-роли jdauphant.nginx, переменные определенные для роли и инвентори файл были отредактированы. Инфраструктура сконфинурирована с использованием обновленного сценария ansible. После чего к приложению можно было обратиться через прокси сервер настроенный на 80 порту сервера приложения из Интернет. По окончании развертывания и тестирования инфраструктуар была уничтожена.
 
-Homework 11
-Ansible работа с плейбуками.
+# Homework 11 Ansible работа с плейбуками. #
 
 Деплой бд и приложения, используя теги, хосты из инвентори, хендлеры и настраивая packer для работы с ansible.
 
@@ -104,7 +103,7 @@ Packer использует плейбуки для конфигурации в 
 /bin/packer build -var-file=packer/variables.json ansible/app.json
 Задача со *
 
-Использовал gce.py
+## Использовал gce.py
 
 Дня настройки dynamic inventory исполоьзовал инструкцию http://docs.ansible.com/ansible/latest/guide_gce.html
 
@@ -129,8 +128,7 @@ reddit-db | SUCCESS => {
 }
 
 
-Homework 10
-Работа с ansible
+# Homework 10 Работа с ansible #
 
 Все хосты на которые ansible может слать команды указываются в файле inventory. Он может быть формата ini, yml, json (кроме ini только с версии ansible 2.4) Команды отправляются обычно через модули в формате:
 
@@ -140,8 +138,7 @@ ansible appserver -i ./inventory -m ping
 
 Модули кроме shell и command проверяют состояние системы\файла и не будут выполнять лишнюю работу по второму разу.
 
-Homework 9
-Модули в terraform
+# Homework 9 Модули в terraform #
 
 Создал 3 модуля - db, app, vpc db - модуль для создание виртуалки и настройки на ней бд mongodb app - модуль для создания виртуалки и настройки на ней reddit с подключением к mongodb vpc - модуль для настройки подключения по ssh
 
@@ -174,8 +171,7 @@ provisioner "file" {
   content     = "${data.template_file.pumaservice.rendered}"
   destination = "/tmp/puma.service"
 }
-Homework 8
-Работа с terraform
+# Homework 8 Работа с terraform #
 
 Если работа идет на новой машине, а не последовательно после задачния с packer, то необходимо авторизовываться с гуглом: gcloud auth application-default login
 
@@ -200,8 +196,7 @@ sshKeys = "${var.user}:${file(var.public_key_path)}\nappuser1:${file(var.public_
 Сделал поднятие двух нод через count
 Балансировку не осилил пока, мог бы сделать через создание еще одной ноды с nginx, но думаю зада была как раз в том, чтобы основоить встренные в гугл механизм балансировки. Посмотрю на праздинках.
 
-Homework 7
-Работа с packer
+# Homework 7 Работа с packer #
 
 Аутентификация с гугловским облаком: gcloud auth application-default login
 
@@ -223,8 +218,7 @@ install_ruby.sh install_mongodb.sh deploy.sh
 
 Чтобы reddit запускался автоматом при старте виртуалки положил в него сервис файл - deamon и настроил на автозапуск
 
-Homework 6
-Скрипты для установки:
+# Homework 6 Скрипты для установки: #
 
 deploy.sh install_mongodb.sh install_ruby.sh
 
@@ -244,7 +238,7 @@ gcloud compute instances create reddit-app\
   --tags puma-server \
   --restart-on-failure \
   --metadata startup-script-url=https://raw.githubusercontent.com/Otus-DevOps-2017-11/nefariusmag_infra/Infra-2/Startup.sh
-Homework 5
+# Homework 5 #
 ssh -A 35.198.103.134 'ssh 10.156.0.3' alias internalhost="ssh -A 35.198.103.134 'ssh 10.156.0.3'"
 
 Хост bastion, IP: 35.198.103.134, внутр. IP: 10.156.0.2. Хост: someinternalhost, внутр. IP: 10.156.0.3
