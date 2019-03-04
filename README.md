@@ -4,6 +4,7 @@ HW11
 Add playbook for configure app-server and db-server in one host
 Add playbook for configure app-serve and db-server for other hosts
 Add file gce.py for chech ip, this dynamic uinventory
+
 Homework 12
 Ansible работа с ролями.
 
@@ -127,6 +128,7 @@ reddit-db | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
+
 
 Homework 10
 Работа с ansible
