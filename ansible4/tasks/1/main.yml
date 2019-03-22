@@ -1,0 +1,9 @@
+---
+# Setting DB  server
+- include : /etc/ansible/tasks/1/pre_db.yml
+- include : /etc/ansible/tasks/1/db.yml
+# Setting App server
+- include: /etc/ansible/tasks/1/pre_app.yml
+- include: /etc/ansible/tasks/1/app.yml 
+# Deploy app
+- include : /etc/ansible/tasks/1/deployapp.yml 

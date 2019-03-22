@@ -1,0 +1,77 @@
+# Install MongoDB
+- name: MongoDb | Import publick key
+  sudo: yes
+  apt_key: >
+          keyserver=hkp://keyserver.ubuntu.com:80
+          id=EA312927
+  tags: install
+
+- name: Checking status | check status file
+  stat: path=/etc/apt/sources.list.d/mongodb-org-3.2.list
+  register: stat_result
+  tags: install
+
+- name: MongoDB |Add file
+  file:
+          path=/etc/apt/sources.list.d/mongodb-org-3.2.list
+          state=touch
+  when: stat_result.stat.exists == False      
+  tags: install
+
+- name: MongoDB | Add repository
+  sudo: yes
+  lineinfile: >
+          line="deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse"
+          dest=/etc/apt/sources.list.d/mongodb-org-3.2.list
+  tags: install
+
+- name: MongoDb | Install MongoDB
+  apt:
+          name: mongodb-org
+          allow_unauthenticated: yes
+          state: present
+          update_cache: yes
+  tags: install
+
+- name: MongoDB | Install mc
+  apt:
+          name: mc
+          state: present
+  tags: install
+
+- name: MongoDB | Ensure MongoDB is running
+  service:
+          name: mongod
+          state: started
+  tags: install
+
+- name: MongoDB | Ensure MongoDB enable
+  service:
+          name: mongod
+          enabled: yes
+  tags: install
+
+#- name: MongoDb | Checking state file
+#  stat: path="{{ temp_folder }}/mongod.conf"
+#  register: stat_result
+
+#- name: MongoDB | Remove file mongod.conf
+#  file:
+#          path: "{{ temp_folder }}/mongod.conf"
+#          state: absent
+
+#  when: stat_result.stat.exists == True
+
+#- name: Clone Github | mongod.conf file
+#  git:
+#          repo: 'https://github.com/Nonamed123/mon.git'
+#          dest: "{{ temp_folder }}/mongod.conf"
+
+
+#- name: MongoDB | Copy file mongod.conf
+#  command:
+#          mv /tmp/mongod.conf/mongod.conf /etc/mongod.conf
+#- name: MongoDB | Restatr MongoDB
+#  service:
+#          name: mongod
+#          state: restarted 

@@ -1,0 +1,10 @@
+---
+- name: preinstaall python for ansible
+  hosts: app
+  tags: deploy-tag 
+  gather_facts: false
+  become: true
+  pre_tasks:
+    - name: Install pythn fo Ansible
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      changed_when: false

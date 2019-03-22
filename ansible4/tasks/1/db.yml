@@ -1,0 +1,13 @@
+---
+- name: MongoDb | Configure host
+  hosts: db
+  gather_facts: true
+  become: true
+  tags: db-tag
+#  pre_tasks:
+#    - name: Install python for ansible
+#      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+#      changed_when: false
+
+  roles:
+          - db
