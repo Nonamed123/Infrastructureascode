@@ -1,0 +1,15 @@
+---
+- name: Start App
+  hosts: app
+  become: true
+  gather_facts: true
+  tags: app-tag
+#  pre_tasks:
+#    - name: Install pythn fo Ansible
+#      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+#      changed_when: false
+
+  roles:
+          - app
+          - /etc/ansible/roles/jdauphant.nginx
+

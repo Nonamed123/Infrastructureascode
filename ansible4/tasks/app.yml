@@ -1,0 +1,40 @@
+---
+- name: Start App
+  hosts: app
+  become: true
+  tags: app-tag
+  vars:
+          mongo_bind_ip: 0.0.0.0
+          db_host: 10.132.15.222
+  tasks:
+          - name: Puma | Checking status file
+            stat:
+                    path: /etc/systemd/system/puma.service
+            register: stat_result
+
+          - name: Add unit file for puma
+            template:
+                    src: /root/files/puma.service
+                    dest: /etc/systemd/system/puma.service
+            when: stat_result.stat.exists == False
+            notify: reload puma
+
+          - name: Puma and DB | Cheking status file
+            stat:
+                    path: /root/db_config
+            register: stat_result
+
+          - name: Add config for DB connection
+            template:
+                    src: /root/templates/db_config.j2
+                    dest: /root/db_config
+            when: stat_result.stat.exists == False
+
+          - name: enable puma
+            systemd: name=puma enabled=yes
+  
+  handlers:
+         - name: reload puma
+           become: true
+           systemd: name=puma state=reloaded
+
